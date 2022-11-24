@@ -1,10 +1,14 @@
 const express = require('express');
+const mongoose = require('mongoose');
 
-const { PORT = 3000 } = process.env;
+// TODO: Уточнить соответствует ли это требованиям чек-листа
+const { PORT = 3000, DB_URL = 'mongodb://localhost:27017/moviesdb' } = process.env;
 
 const router = require('./routes/index');
 
 const app = express();
+
+mongoose.connect(DB_URL);
 
 // Parsers
 app.use(express.json());
