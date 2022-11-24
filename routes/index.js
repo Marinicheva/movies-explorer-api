@@ -2,26 +2,22 @@ const router = require('express').Router();
 const usersRouter = require('./users');
 const moviesRouter = require('./movies');
 
+const { createUser, loginUser, logoutUser } = require('../controllers/users');
+
 // Не защищенные роуты
 // TODO: Роут ниже лишний потом удалить
 router.get('/', (req, res) => {
   res.send('На главной все спокойно');
 });
 
-router.post('/signup', (req, res) => {
-  res.send('Тут мы регистрируемся');
-});
+router.post('/signup', createUser);
 
-router.post('/signin', (req, res) => {
-  res.send('Тут мы авторизируемся');
-});
+router.post('/signin', loginUser);
 
 // Защищенные роуты
 router.use('/users', usersRouter);
 router.use('/movies', moviesRouter);
 
-router.post('/signout', (req, res) => {
-  res.send('Тут мы разлогиниваемся');
-});
+router.post('/signout', logoutUser);
 
 module.exports = router;
