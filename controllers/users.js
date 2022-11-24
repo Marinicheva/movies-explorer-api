@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 require('dotenv').config();
 
-const { JWT_SECRET = 'dev-secret' } = process.env;
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 // Регистрация пользователя
 const createUser = async (req, res) => {
@@ -35,7 +35,7 @@ const loginUser = async (req, res) => {
 
     const token = jwt.sign(
       { _id: user._id },
-      JWT_SECRET,
+      NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
       { expiresIn: '7d' },
     );
     res.cookie('token', token, {
@@ -51,6 +51,7 @@ const loginUser = async (req, res) => {
   }
 };
 
+// Разлогин пользователя
 // TODO: Нужен ли тут обработчик ошибок ???
 const logoutUser = (req, res) => {
   res.clearCookie('token')
