@@ -2,6 +2,7 @@ const router = require('express').Router();
 const usersRouter = require('./users');
 const moviesRouter = require('./movies');
 
+const { auth } = require('../middlewares/auth');
 const { createUser, loginUser, logoutUser } = require('../controllers/users');
 
 // Не защищенные роуты
@@ -11,8 +12,9 @@ router.get('/', (req, res) => {
 });
 
 router.post('/signup', createUser);
-
 router.post('/signin', loginUser);
+
+router.use(auth);
 
 // Защищенные роуты
 router.use('/users', usersRouter);
