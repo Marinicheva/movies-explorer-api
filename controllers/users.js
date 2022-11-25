@@ -15,14 +15,14 @@ const createUser = async (req, res) => {
 
     const createdUser = { email: user.email, name: user.name };
 
-    res.staus(201)
+    res.status(201)
       .send(createdUser);
   } catch (err) {
     // TODO: Обрабатываем ошибку !!! централизованно и понятно !!!
     console.log(err);
-    const message = err.keyValue.email;
     // TODO: Это для E11000
-    res.send({ message: `Пользоавтель с email ${message} уже существует` });
+    // const message = err.keyValue.email;
+    res.send({ message: 'Пользователь с email уже существует' });
   }
 };
 
@@ -58,8 +58,47 @@ const logoutUser = (req, res) => {
     .send({ message: 'Пока-пока! Приходите снова' });
 };
 
+// Получение информации о пользователе
+const getUserInfo = async (req, res) => {
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId)
+      .orFail(new Error('Пользователь с таким id не найден'));
+
+    res.send(user);
+  } catch (err) {
+    console.log(err);
+    res.send({ code: err.code, message: err.message });
+  }
+};
+
+const updateUserInfo = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { name, email } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { name, email },
+      {
+        new: true,
+        runValidators: true,
+      },
+    )
+      .orFail(new Error('Пользователь с указанным id не найден'));
+
+    res.send(updatedUser);
+  } catch (err) {
+    console.log(err);
+    res.send(err.code, err.message);
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
   logoutUser,
+  getUserInfo,
+  updateUserInfo,
 };
