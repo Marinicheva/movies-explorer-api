@@ -1,15 +1,8 @@
 const router = require('express').Router();
+const { getMovies, addMovie, removeMovie } = require('../controllers/movies');
 
-router.get('/', (req, res) => {
-  res.send('Вот Ваши любимые фильмы');
-});
-
-router.post('/', (req, res) => {
-  res.send('Хорошо, добавим и этот к Вашим любимым фильмам');
-});
-
-router.delete('/:id', (req, res) => {
-  res.send('Удаляю, раз Вы этот фильм разлюбили');
-});
+router.get('/', getMovies);
+router.post('/', addMovie);
+router.delete('/:id', removeMovie);
 
 module.exports = router;
