@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
+const { errors } = require('celebrate');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
@@ -25,6 +26,9 @@ app.use(router);
 
 // Логгер ошибок
 app.use(errorLogger);
+
+// Обработчики ошибок
+app.use(errors());
 
 // Listening
 app.listen(PORT, () => {

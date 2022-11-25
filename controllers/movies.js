@@ -35,16 +35,16 @@ const addMovie = async (req, res) => {
 
 const removeMovie = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { movieId } = req.params;
 
-    const movie = await Movie.findById(id)
+    const movie = await Movie.findById(movieId)
       .orFail(new Error('Фильм с таким id не найден'));
 
     if (movie.owner.toString() !== req.user._id) {
       throw new Error('Нет прав на удаление фильма');
     }
 
-    const deletedMovie = await Movie.findByIdAndRemove(id);
+    const deletedMovie = await Movie.findByIdAndRemove(movieId);
     res.send(deletedMovie);
   } catch (err) {
     console.log(err);
