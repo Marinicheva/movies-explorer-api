@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
@@ -14,6 +15,7 @@ mongoose.connect(MONGO_URL);
 
 // Parsers
 app.use(express.json());
+app.use(cookieParser());
 
 // Логгер запросов
 app.use(requestLogger);
