@@ -10,11 +10,6 @@ const { unregisteredUserSchema, unloginedUserSchema } = require('../utils/userJo
 const NotFoundError = require('../errors/NotFoundError');
 
 // Не защищенные роуты
-// TODO: Роут ниже лишний потом удалить
-router.get('/', (req, res) => {
-  res.send('На главной все спокойно');
-});
-
 router.post('/signup', celebrate(unregisteredUserSchema), createUser);
 router.post('/signin', celebrate(unloginedUserSchema), loginUser);
 

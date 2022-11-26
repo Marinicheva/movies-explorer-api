@@ -78,6 +78,7 @@ const getUserInfo = async (req, res, next) => {
   }
 };
 
+// Обновление информации о пользователе
 const updateUserInfo = async (req, res, next) => {
   try {
     const userId = req.user._id;

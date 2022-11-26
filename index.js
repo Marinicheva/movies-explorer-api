@@ -10,8 +10,9 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const router = require('./routes/index');
 const handleErrors = require('./middlewares/handleErrors');
 
-const { PORT = 3000, MONGO_URL, NODE_ENV } = process.env;
 const { MONGO_BASE_URL } = require('./utils/constants');
+
+const { PORT = 3000, MONGO_URL = MONGO_BASE_URL } = process.env;
 
 const app = express();
 
@@ -19,7 +20,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-mongoose.connect(NODE_ENV === 'production' ? MONGO_URL : MONGO_BASE_URL);
+mongoose.connect(MONGO_URL);
 
 app.use(limiter);
 app.use(helmet());
