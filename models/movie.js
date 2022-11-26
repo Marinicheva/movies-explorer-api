@@ -60,8 +60,6 @@ const movieShema = new mongoose.Schema({
   movieId: {
     type: String,
     required: [true, 'Поле movieId является обязательным'],
-    // По логике д.б. уникальным ...
-    unique: true,
   },
   nameRU: {
     type: String,

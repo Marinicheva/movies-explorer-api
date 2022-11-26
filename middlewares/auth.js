@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const { NODE_ENV, JWT_SECRET } = process.env;
+const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const auth = (req, res, next) => {
   try {
@@ -11,9 +12,7 @@ const auth = (req, res, next) => {
     req.user = payload;
     next();
   } catch (err) {
-    // TODO: Централизованная обработка ошибок
-    console.log(err);
-    res.send('Токена нет или он неверный');
+    next(new UnauthorizedError('Необходима авторизация'));
   }
 };
 

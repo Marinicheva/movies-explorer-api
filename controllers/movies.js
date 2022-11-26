@@ -1,16 +1,20 @@
+const mongoose = require('mongoose');
+const BadRequestError = require('../errors/BadRequestError');
+const NotFoundError = require('../errors/NotFoundError');
+const ConflictError = require('../errors/ConflictError');
+
 const Movie = require('../models/movie');
 
-const getMovies = async (req, res) => {
+const getMovies = async (req, res, next) => {
   try {
     const movies = await Movie.find({});
     res.send(movies);
   } catch (err) {
-    console.log(err);
-    res.send(err.code, err.message);
+    next(err);
   }
 };
 
-const addMovie = async (req, res) => {
+const addMovie = async (req, res, next) => {
   try {
     const movie = {
       country: req.body.country,
@@ -28,27 +32,33 @@ const addMovie = async (req, res) => {
     const createdMovie = await Movie.create({ ...movie, owner: req.user._id });
     res.send(createdMovie);
   } catch (err) {
-    console.log(err);
-    res.send(err.code, err.message);
+    if (err instanceof mongoose.Error.ValidationError) {
+      const errorField = err.message.split(': ').splice(1, 1).join('');
+      next(new BadRequestError(`Данные в поле ${errorField} не переданы или переданы в некорректном формате`));
+    }
+    next(err);
   }
 };
 
-const removeMovie = async (req, res) => {
+const removeMovie = async (req, res, next) => {
   try {
     const { movieId } = req.params;
 
     const movie = await Movie.findById(movieId)
-      .orFail(new Error('Фильм с таким id не найден'));
+      .orFail(new NotFoundError('Фильм с таким id не найден'));
 
     if (movie.owner.toString() !== req.user._id) {
-      throw new Error('Нет прав на удаление фильма');
+      next(new ConflictError('У данного пользователя нет прав на удаление данного фильма'));
     }
 
     const deletedMovie = await Movie.findByIdAndRemove(movieId);
     res.send(deletedMovie);
   } catch (err) {
-    console.log(err);
-    res.send(err);
+    if (err instanceof mongoose.Error.CastError) {
+      next(new BadRequestError('Указан некорректный id картчоки'));
+    } else {
+      next(err);
+    }
   }
 };
 
