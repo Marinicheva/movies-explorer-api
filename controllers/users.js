@@ -5,6 +5,7 @@ const User = require('../models/user');
 require('dotenv').config();
 
 const { NODE_ENV, JWT_SECRET } = process.env;
+const { DEV_SECRET_TOKEN } = require('../utils/constants');
 
 const BadRequestError = require('../errors/BadRequestError');
 const ConflictError = require('../errors/ConflictError');
@@ -43,7 +44,7 @@ const loginUser = async (req, res, next) => {
 
     const token = jwt.sign(
       { _id: user._id },
-      NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+      NODE_ENV === 'production' ? JWT_SECRET : DEV_SECRET_TOKEN,
       { expiresIn: '7d' },
     );
 
@@ -51,7 +52,7 @@ const loginUser = async (req, res, next) => {
       maxAge: 3600000,
       httpOnly: true,
     })
-      .send({ message: 'Авторизация прошла успешно' });
+      .send({ message: 'Авторизация прошла успешно', token });
   } catch (err) {
     next(err);
   }

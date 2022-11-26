@@ -10,7 +10,8 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const router = require('./routes/index');
 const handleErrors = require('./middlewares/handleErrors');
 
-const { PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/moviesdb' } = process.env;
+const { PORT = 3000, MONGO_URL, NODE_ENV } = process.env;
+const { MONGO_BASE_URL } = require('./utils/constants');
 
 const app = express();
 
@@ -18,7 +19,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-mongoose.connect(MONGO_URL);
+mongoose.connect(NODE_ENV === 'production' ? MONGO_URL : MONGO_BASE_URL);
 
 app.use(limiter);
 app.use(helmet());
@@ -37,6 +38,4 @@ app.use(errors());
 app.use(handleErrors);
 
 // Listening
-app.listen(PORT, () => {
-  console.log(`App listen port ${PORT}`);
-});
+app.listen(PORT);
