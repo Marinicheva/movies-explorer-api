@@ -12,7 +12,7 @@ const addMovieJoiSchema = {
     image: Joi.string().required().regex(URL_REGEXP),
     trailerLink: Joi.string().required().regex(URL_REGEXP),
     thumbnail: Joi.string().required().regex(URL_REGEXP),
-    movieId: Joi.string().required(),
+    movieId: Joi.number().required(),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
   }),

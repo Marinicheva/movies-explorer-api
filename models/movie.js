@@ -58,19 +58,12 @@ const movieShema = new mongoose.Schema({
     required: [true, 'Поле owner является обязательным'],
   },
   movieId: {
-    type: String,
+    type: Number,
     required: [true, 'Поле movieId является обязательным'],
   },
   nameRU: {
     type: String,
     required: [true, 'Поле nameRU является обязательным'],
-    // TODO: Подумать нужна ли тут валидация
-    // validate: (value) =>  {
-    //   if (/[?!,.А-яа-яЁё0-9\-\s]+/g.test(value)) {
-    //   return true;
-    // },
-    // return false;
-    // },
   },
   nameEN: {
     type: String,
