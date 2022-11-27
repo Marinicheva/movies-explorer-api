@@ -51,10 +51,10 @@ const removeMovie = async (req, res, next) => {
 
     if (movie.owner.toString() !== req.user._id) {
       next(new ConflictError('У данного пользователя нет прав на удаление данного фильма'));
+    } else {
+      const deletedMovie = await Movie.findByIdAndRemove(movieId);
+      res.send(deletedMovie);
     }
-
-    const deletedMovie = await Movie.findByIdAndRemove(movieId);
-    res.send(deletedMovie);
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
       next(new BadRequestError('Указан некорректный id картчоки'));
