@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
 require('dotenv').config();
+
+const User = require('../models/user');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 const { DEV_SECRET_TOKEN } = require('../utils/constants');
 
+const { ERRORS } = require('../utils/constants');
 const BadRequestError = require('../errors/BadRequestError');
 const ConflictError = require('../errors/ConflictError');
 const NotFoundError = require('../errors/NotFoundError');
@@ -25,11 +27,9 @@ const createUser = async (req, res, next) => {
       .send(createdUser);
   } catch (err) {
     if (err instanceof mongoose.Error.ValidationError) {
-      const errorField = err.message.split(': ').splice(1, 1).join('');
-      next(new BadRequestError(`Данные в поле ${errorField} не переданы или переданы некорректные`));
+      next(new BadRequestError(ERRORS.badRequest.messageDefault));
     } else if (err.code === 11000) {
-      const conflictEmail = err.keyValue.email;
-      next(new ConflictError(`Пользователь с ${conflictEmail} уже существует`));
+      next(new ConflictError(ERRORS.conflict.message));
     } else {
       next(err);
     }
@@ -70,7 +70,7 @@ const getUserInfo = async (req, res, next) => {
 
   try {
     const user = await User.findById(userId)
-      .orFail(new NotFoundError('Пользователь с таким id не найден'));
+      .orFail(new NotFoundError(ERRORS.notFound.messageUserID));
 
     res.send(user);
   } catch (err) {
@@ -92,18 +92,16 @@ const updateUserInfo = async (req, res, next) => {
         runValidators: true,
       },
     )
-      .orFail(new NotFoundError('Пользователь с указанным id не найден'));
+      .orFail(new NotFoundError(ERRORS.notFound.messageUserID));
 
     res.send(updatedUser);
   } catch (err) {
     if (err instanceof mongoose.Error.ValidationError) {
-      const errorField = err.message.split(': ').splice(1, 1).join('');
-      next(new BadRequestError(`Данные в поле ${errorField} не переданы или переданы некорректные`));
+      next(new BadRequestError(ERRORS.badRequest.messageDefault));
     } else if (err instanceof mongoose.Error.CastError) {
-      next(new BadRequestError('Некорректный id пользователя'));
+      next(new BadRequestError(ERRORS.badRequest.messageUserId));
     } else if (err.code === 11000) {
-      const conflictEmail = err.keyValue.email;
-      next(new ConflictError(`Пользователь с ${conflictEmail} уже существует`));
+      next(new ConflictError(ERRORS.conflict.message));
     } else {
       next(err);
     }

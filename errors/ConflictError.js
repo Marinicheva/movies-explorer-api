@@ -1,10 +1,10 @@
-const { ERROR_CODES } = require('../utils/constants');
+const { ERRORS } = require('../utils/constants');
 
 class ConflictError extends Error {
   constructor(message) {
     super(message);
 
-    this.statusCode = ERROR_CODES.conflict;
+    this.statusCode = ERRORS.conflict.code;
   }
 }
 

@@ -7,9 +7,10 @@ const { auth } = require('../middlewares/auth');
 const { createUser, loginUser, logoutUser } = require('../controllers/users');
 const { unregisteredUserSchema, unloginedUserSchema } = require('../utils/userJoiSchemas');
 
+const { ERRORS } = require('../utils/constants');
 const NotFoundError = require('../errors/NotFoundError');
 
-// Не защищенные роуты
+// Незащищенные роуты
 router.post('/signup', celebrate(unregisteredUserSchema), createUser);
 router.post('/signin', celebrate(unloginedUserSchema), loginUser);
 
@@ -23,7 +24,7 @@ router.post('/signout', logoutUser);
 
 // Роут для всех не существующих маршрутов
 router.use('*', (req, res, next) => {
-  next(new NotFoundError('Запрашиваемый ресурс не найден'));
+  next(new NotFoundError(ERRORS.notFound.messageDefault));
 });
 
 module.exports = router;

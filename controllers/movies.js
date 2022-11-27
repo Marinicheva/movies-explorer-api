@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
-const BadRequestError = require('../errors/BadRequestError');
-const NotFoundError = require('../errors/NotFoundError');
-const ConflictError = require('../errors/ConflictError');
 
 const Movie = require('../models/movie');
+
+const { ERRORS } = require('../utils/constants');
+const BadRequestError = require('../errors/BadRequestError');
+const NotFoundError = require('../errors/NotFoundError');
+const ForbiddenError = require('../errors/ForbiddenError');
 
 const getMovies = async (req, res, next) => {
   try {
@@ -35,8 +37,7 @@ const addMovie = async (req, res, next) => {
     res.send(createdMovie);
   } catch (err) {
     if (err instanceof mongoose.Error.ValidationError) {
-      const errorField = err.message.split(': ').splice(1, 1).join('');
-      next(new BadRequestError(`Данные в поле ${errorField} не переданы или переданы в некорректном формате`));
+      next(new BadRequestError(ERRORS.badRequest.messageDefault));
     }
     next(err);
   }
@@ -47,17 +48,17 @@ const removeMovie = async (req, res, next) => {
     const { movieId } = req.params;
 
     const movie = await Movie.findById(movieId)
-      .orFail(new NotFoundError('Фильм с таким id не найден'));
+      .orFail(new NotFoundError(ERRORS.notFound.messageMovieId));
 
     if (movie.owner.toString() !== req.user._id) {
-      next(new ConflictError('У данного пользователя нет прав на удаление данного фильма'));
+      next(new ForbiddenError(ERRORS.forbidden.message));
     } else {
       const deletedMovie = await Movie.findByIdAndRemove(movieId);
       res.send(deletedMovie);
     }
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
-      next(new BadRequestError('Указан некорректный id картчоки'));
+      next(new BadRequestError(ERRORS.badRequest.messageMovieId));
     } else {
       next(err);
     }

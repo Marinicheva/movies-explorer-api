@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
 
+const { ERRORS } = require('../utils/constants');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const userSchema = new mongoose.Schema({
@@ -32,12 +33,12 @@ const userSchema = new mongoose.Schema({
 
 userSchema.statics.findByCredentials = function (email, hashPassword) {
   return this.findOne({ email }).select('+password')
-    .orFail(new UnauthorizedError('Проверьте корректность email и пароля и авторизуйтесь'))
+    .orFail(new UnauthorizedError(ERRORS.unauthorized.messageIncorrectData))
     .then((user) => bcrypt
       .compare(hashPassword, user.password)
       .then((match) => {
         if (!match) {
-          return Promise.reject(new UnauthorizedError('Проверьте корректность email и пароля и авторизуйтесь'));
+          return Promise.reject(new UnauthorizedError(ERRORS.unauthorized.messageIncorrectData));
         }
         return user;
       }));
