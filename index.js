@@ -7,7 +7,7 @@ const { errors } = require('celebrate');
 
 const limiter = require('./middlewares/requestsLimiter');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const router = require('./routes/index');
+const router = require('./routes');
 const handleErrors = require('./middlewares/handleErrors');
 
 const { MONGO_BASE_URL } = require('./utils/constants');
