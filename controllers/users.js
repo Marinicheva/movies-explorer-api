@@ -101,6 +101,9 @@ const updateUserInfo = async (req, res, next) => {
       next(new BadRequestError(`Данные в поле ${errorField} не переданы или переданы некорректные`));
     } else if (err instanceof mongoose.Error.CastError) {
       next(new BadRequestError('Некорректный id пользователя'));
+    } else if (err.code === 11000) {
+      const conflictEmail = err.keyValue.email;
+      next(new ConflictError(`Пользователь с ${conflictEmail} уже существует`));
     } else {
       next(err);
     }
