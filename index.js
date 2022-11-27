@@ -22,11 +22,12 @@ app.use(cookieParser());
 
 mongoose.connect(MONGO_URL);
 
-app.use(limiter);
-app.use(helmet());
-
 // Логгер запросов
 app.use(requestLogger);
+
+// Лимитер и хелмет
+app.use(limiter);
+app.use(helmet());
 
 // Роут
 app.use(router);
