@@ -33,6 +33,15 @@ const ERRORS = {
   },
 };
 
+const allowedCors = [
+  'https://movies.marinich.nomoredomains.club',
+  'http://movies.marinich.nomoredomains.club',
+  'http://localhost:3000',
+  'https://localhost:3000',
+];
+
+const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
+
 module.exports = {
-  URL_REGEXP, MONGO_BASE_URL, DEV_SECRET_TOKEN, ERRORS,
+  URL_REGEXP, MONGO_BASE_URL, DEV_SECRET_TOKEN, ERRORS, allowedCors, DEFAULT_ALLOWED_METHODS,
 };
