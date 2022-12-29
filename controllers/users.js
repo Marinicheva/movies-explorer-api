@@ -51,6 +51,8 @@ const loginUser = async (req, res, next) => {
     res.cookie('token', token, {
       maxAge: 3600000,
       httpOnly: true,
+      sameSite: 'none',
+      secure: true,
     })
       .send({ message: 'Авторизация прошла успешно', token });
   } catch (err) {
