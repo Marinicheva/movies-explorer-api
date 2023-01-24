@@ -1,5 +1,5 @@
 # movies-explorer-api
-Бэкенд часть для дипломного проекта [ссылка тут](https://api.movies.marinich.nomoredomains.club/)
+Бэкенд часть для дипломного проекта
 
 Роуты:
  - POST /signup - регистрация нового пользователя
